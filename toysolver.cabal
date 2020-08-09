@@ -1,3 +1,4 @@
+cabal-version:  3.0
 Name:		toysolver
 Version:	0.7.0
 License:	BSD-3-Clause
@@ -5,7 +6,6 @@ License-File:	COPYING
 Author:		Masahiro Sakai (masahiro.sakai@gmail.com)
 Maintainer:	masahiro.sakai@gmail.com
 Category:	Algorithms, Optimisation, Optimization, Theorem Provers, Constraints, Logic, Formal Methods, SMT
-Cabal-Version:	1.18
 Synopsis:	Assorted decision procedures for SAT, SMT, Max-SAT, PB, MIP, etc
 Description:	Toy-level solver implementation of various problems including SAT, SMT, Max-SAT, PBS/PBO (Pseudo Boolean Satisfaction/Optimization), MILP (Mixed Integer Linear Programming) and non-linear real arithmetic.
 Homepage:	https://github.com/msakai/toysolver/
@@ -156,7 +156,21 @@ source-repository head
   type:     git
   location: git://github.com/msakai/toysolver.git
 
+Common common-options
+  Default-Language: Haskell2010
+  GHC-Options: -rtsopts
+  -- GHC-Prof-Options: -auto-all
+
+Common exe-options
+  Import: common-options
+  if flag(ForceChar8)
+    CPP-OPtions: "-DFORCE_CHAR8"
+  if flag(LinuxStatic)
+    GHC-Options: -static -optl-static -optl-pthread
+  Other-Extensions: CPP
+
 Library
+  Import: common-options
   Exposed: True
   Hs-source-dirs: src
   Build-Depends:
@@ -222,7 +236,6 @@ Library
      Exposed-Modules: ToySolver.SAT.MessagePassing.SurveyPropagation.OpenCL
   if impl(ghc)
      Build-Depends: ghc-prim
-  Default-Language: Haskell2010
   Other-Extensions:
      BangPatterns
      CPP
@@ -425,9 +438,9 @@ Library
      ToySolver.SAT.MUS.Enum.CAMUS
      ToySolver.Version.TH
      Paths_toysolver
-  -- GHC-Prof-Options: -auto-all
 
 Executable toysolver
+  Import: exe-options
   Main-is: toysolver.hs
   HS-Source-Dirs: app
   Build-Depends:
@@ -442,16 +455,10 @@ Executable toysolver
     pseudo-boolean,
     scientific,
     toysolver
-  Default-Language: Haskell2010
-  Other-Extensions: CPP
-  GHC-Options: -rtsopts -threaded
-  if flag(ForceChar8)
-    CPP-OPtions: "-DFORCE_CHAR8"
-  if flag(LinuxStatic)
-    GHC-Options: -static -optl-static -optl-pthread
-  -- GHC-Prof-Options: -auto-all
+  GHC-Options: -threaded
 
 Executable toysat
+  Import: exe-options
   Main-is: toysat.hs
   Other-Modules: UBCSAT
   HS-Source-Dirs: app/toysat
@@ -477,18 +484,13 @@ Executable toysat
     toysolver,
     unbounded-delays,
     vector
-  Default-Language: Haskell2010
-  Other-Extensions: ScopedTypeVariables, CPP
-  GHC-Options: -rtsopts -threaded
-  -- GHC-Prof-Options: -auto-all
-  if flag(ForceChar8)
-    CPP-OPtions: "-DFORCE_CHAR8"
+  Other-Extensions: ScopedTypeVariables
+  GHC-Options: -threaded
   if flag(WithZlib)
     CPP-Options: "-DWITH_ZLIB"
-  if flag(LinuxStatic)
-    GHC-Options: -static -optl-static -optl-pthread
 
 Executable toysmt
+  Import: exe-options
   HS-Source-Dirs: app/toysmt, Smtlib
   Main-is: toysmt.hs
   Other-Modules:
@@ -516,16 +518,10 @@ Executable toysmt
   if flag(UseHaskeline)
     Build-Depends: haskeline >=0.7 && <0.9
     CPP-Options: "-DUSE_HASKELINE_PACKAGE"
-  Default-Language: Haskell2010
-  Other-Extensions: ScopedTypeVariables, CPP
-  GHC-Options: -rtsopts
-  -- GHC-Prof-Options: -auto-all
-  if flag(ForceChar8)
-    CPP-OPtions: "-DFORCE_CHAR8"
-  if flag(LinuxStatic)
-    GHC-Options: -static -optl-static -optl-pthread
+  Other-Extensions: ScopedTypeVariables
 
 Executable toyqbf
+  Import: exe-options
   Main-is: toyqbf.hs
   HS-Source-Dirs: app
   Build-Depends:
@@ -534,16 +530,10 @@ Executable toyqbf
     data-default-class,
     optparse-applicative,
     toysolver
-  Default-Language: Haskell2010
-  Other-Extensions: ScopedTypeVariables, CPP
-  GHC-Options: -rtsopts
-  -- GHC-Prof-Options: -auto-all
-  if flag(ForceChar8)
-    CPP-OPtions: "-DFORCE_CHAR8"
-  if flag(LinuxStatic)
-    GHC-Options: -static -optl-static -optl-pthread
+  Other-Extensions: ScopedTypeVariables
 
 Executable toyfmf
+  Import: exe-options
   If !flag(BuildToyFMF)
     Buildable: False
   Main-is: toyfmf.hs
@@ -557,18 +547,11 @@ Executable toyfmf
       optparse-applicative,
       text,
       toysolver
-  Default-Language: Haskell2010
-  Other-Extensions: CPP
-  GHC-Options: -rtsopts
-  if flag(ForceChar8)
-    CPP-OPtions: "-DFORCE_CHAR8"
-  if flag(LinuxStatic)
-    GHC-Options: -static -optl-static -optl-pthread
-  -- GHC-Prof-Options: -auto-all
 
 -- Converters
 
 Executable toyconvert
+  Import: exe-options
   Main-is: toyconvert.hs
   HS-Source-Dirs: app
   Build-Depends:
@@ -583,20 +566,13 @@ Executable toyconvert
     scientific,
     text,
     toysolver
-  Default-Language: Haskell2010
-  Other-Extensions: CPP
-  GHC-Options: -rtsopts
-  -- GHC-Prof-Options: -auto-all
-  if flag(ForceChar8)
-    CPP-OPtions: "-DFORCE_CHAR8"
   if flag(WithZlib)
     CPP-Options: "-DWITH_ZLIB"
-  if flag(LinuxStatic)
-    GHC-Options: -static -optl-static -optl-pthread
 
 -- Sample Programs
 
 Executable sudoku
+  Import: exe-options
   If !flag(BuildSamplePrograms)
     Buildable: False
   Main-is: sudoku.hs
@@ -605,15 +581,9 @@ Executable sudoku
     array,
     base,
     toysolver
-  Default-Language: Haskell2010
-  Other-Extensions: CPP
-  GHC-Options: -rtsopts
-  if flag(ForceChar8)
-    CPP-OPtions: "-DFORCE_CHAR8"
-  if flag(LinuxStatic)
-    GHC-Options: -static -optl-static -optl-pthread
 
 Executable nonogram
+  Import: exe-options
   If !flag(BuildSamplePrograms)
     Buildable: False
   Main-is: nonogram.hs
@@ -623,16 +593,9 @@ Executable nonogram
     base,
     containers,
     toysolver
-  Default-Language: Haskell2010
-  Other-Extensions: CPP
-  GHC-Options: -rtsopts
-  -- GHC-Prof-Options: -auto-all
-  if flag(ForceChar8)
-    CPP-OPtions: "-DFORCE_CHAR8"
-  if flag(LinuxStatic)
-    GHC-Options: -static -optl-static -optl-pthread
 
 Executable nqueens
+  Import: exe-options
   If !flag(BuildSamplePrograms)
     Buildable: False
   Main-is: nqueens.hs
@@ -641,16 +604,9 @@ Executable nqueens
     array,
     base,
     toysolver
-  Default-Language: Haskell2010
-  Other-Extensions: CPP
-  GHC-Options: -rtsopts
-  -- GHC-Prof-Options: -auto-all
-  if flag(ForceChar8)
-    CPP-OPtions: "-DFORCE_CHAR8"
-  if flag(LinuxStatic)
-    GHC-Options: -static -optl-static -optl-pthread
 
 Executable numberlink
+  Import: exe-options
   If !flag(BuildSamplePrograms)
     Buildable: False
   Main-is: numberlink.hs
@@ -664,16 +620,9 @@ Executable numberlink
     parsec,
     pseudo-boolean,
     toysolver
-  Default-Language: Haskell2010
-  Other-Extensions: CPP
-  GHC-Options: -rtsopts
-  -- GHC-Prof-Options: -auto-all
-  if flag(ForceChar8)
-    CPP-OPtions: "-DFORCE_CHAR8"
-  if flag(LinuxStatic)
-    GHC-Options: -static -optl-static -optl-pthread
 
 Executable knapsack
+  Import: exe-options
   If !flag(BuildSamplePrograms)
     Buildable: False
   Main-is: knapsack.hs
@@ -681,16 +630,9 @@ Executable knapsack
   Build-Depends:
     base,
     toysolver
-  Default-Language: Haskell2010
-  Other-Extensions: CPP
-  GHC-Options: -rtsopts
-  -- GHC-Prof-Options: -auto-all
-  if flag(ForceChar8)
-    CPP-OPtions: "-DFORCE_CHAR8"
-  if flag(LinuxStatic)
-    GHC-Options: -static -optl-static -optl-pthread
 
 Executable assign
+  Import: exe-options
   If !flag(BuildSamplePrograms)
     Buildable: False
   Main-is: assign.hs
@@ -702,16 +644,9 @@ Executable assign
     containers,
     toysolver,
     vector
-  Default-Language: Haskell2010
-  Other-Extensions: CPP
-  GHC-Options: -rtsopts
-  -- GHC-Prof-Options: -auto-all
-  if flag(ForceChar8)
-    CPP-OPtions: "-DFORCE_CHAR8"
-  if flag(LinuxStatic)
-    GHC-Options: -static -optl-static -optl-pthread
 
 Executable shortest-path
+  Import: exe-options
   If !flag(BuildSamplePrograms)
     Buildable: False
   Main-is: shortest-path.hs
@@ -722,16 +657,9 @@ Executable shortest-path
     containers,
     unordered-containers,
     toysolver
-  Default-Language: Haskell2010
-  Other-Extensions: CPP
-  GHC-Options: -rtsopts
-  -- GHC-Prof-Options: -auto-all
-  if flag(ForceChar8)
-    CPP-OPtions: "-DFORCE_CHAR8"
-  if flag(LinuxStatic)
-    GHC-Options: -static -optl-static -optl-pthread
 
 Executable htc
+  Import: exe-options
   If !flag(BuildSamplePrograms)
     Buildable: False
   Main-is: htc.hs
@@ -740,16 +668,9 @@ Executable htc
     base,
     containers,
     toysolver
-  Default-Language: Haskell2010
-  Other-Extensions: CPP
-  GHC-Options: -rtsopts
-  -- GHC-Prof-Options: -auto-all
-  if flag(ForceChar8)
-    CPP-OPtions: "-DFORCE_CHAR8"
-  if flag(LinuxStatic)
-    GHC-Options: -static -optl-static -optl-pthread
 
 Executable svm2lp
+  Import: exe-options
   If !flag(BuildSamplePrograms)
     Buildable: False
   Main-is: svm2lp.hs
@@ -762,16 +683,9 @@ Executable svm2lp
     split,
     text,
     toysolver
-  Default-Language: Haskell2010
-  Other-Extensions: CPP
-  GHC-Options: -rtsopts
-  -- GHC-Prof-Options: -auto-all
-  if flag(ForceChar8)
-    CPP-OPtions: "-DFORCE_CHAR8"
-  if flag(LinuxStatic)
-    GHC-Options: -static -optl-static -optl-pthread
 
 Executable survey-propagation
+  Import: exe-options
   if !flag(BuildSamplePrograms)
     Buildable: False    
   Main-is: survey-propagation.hs
@@ -783,18 +697,12 @@ Executable survey-propagation
   if flag(OpenCL)
     Build-Depends: OpenCL
     CPP-Options: "-DENABLE_OPENCL"
-  Default-Language: Haskell2010
-  Other-Extensions: CPP
   -- We use threaded RTS to avoid the error "schedule: re-entered unsafely.
   -- Perhaps a 'foreign import unsafe' should be 'safe'?" on NVIDIA CUDA.
-  GHC-Options: -rtsopts -threaded
-  -- GHC-Prof-Options: -auto-all
-  if flag(ForceChar8)
-    CPP-Options: "-DFORCE_CHAR8"
-  if flag(LinuxStatic)
-    GHC-Options: -static -optl-static -optl-pthread
+  GHC-Options: -threaded
 
 Executable probsat
+  Import: exe-options
   if !flag(BuildSamplePrograms)
     Buildable: False    
   Main-is: probsat.hs
@@ -807,18 +715,11 @@ Executable probsat
     optparse-applicative,
     vector,
     toysolver
-  Default-Language: Haskell2010
-  Other-Extensions: CPP
-  GHC-Options: -rtsopts
-  -- GHC-Prof-Options: -auto-all
-  if flag(ForceChar8)
-    CPP-Options: "-DFORCE_CHAR8"
-  if flag(LinuxStatic)
-    GHC-Options: -static -optl-static -optl-pthread
 
 -- Misc Programs
 
 Executable pigeonhole
+  Import: exe-options
   If !flag(BuildMiscPrograms)
     Buildable: False
   Main-is: pigeonhole.hs
@@ -829,16 +730,9 @@ Executable pigeonhole
     containers,
     pseudo-boolean,
     toysolver
-  Default-Language: Haskell2010
-  Other-Extensions: CPP
-  GHC-Options: -rtsopts
-  -- GHC-Prof-Options: -auto-all
-  if flag(ForceChar8)
-    CPP-OPtions: "-DFORCE_CHAR8"
-  if flag(LinuxStatic)
-    GHC-Options: -static -optl-static -optl-pthread
 
 Executable maxsatverify
+  Import: exe-options
   If !flag(BuildMiscPrograms)
     Buildable: False
   Main-is: maxsatverify.hs
@@ -847,16 +741,9 @@ Executable maxsatverify
     array,
     base,
     toysolver
-  Default-Language: Haskell2010
-  Other-Extensions: CPP
-  GHC-Options: -rtsopts
-  -- GHC-Prof-Options: -auto-all
-  if flag(ForceChar8)
-    CPP-OPtions: "-DFORCE_CHAR8"
-  if flag(LinuxStatic)
-    GHC-Options: -static -optl-static -optl-pthread
 
 Executable pbverify
+  Import: exe-options
   Main-is: pbverify.hs
   If !flag(BuildMiscPrograms)
     Buildable: False
@@ -866,18 +753,11 @@ Executable pbverify
     base,
     pseudo-boolean,
     toysolver
-  Default-Language: Haskell2010
-  Other-Extensions: CPP
-  GHC-Options: -rtsopts
-  -- GHC-Prof-Options: -auto-all
-  if flag(ForceChar8)
-    CPP-OPtions: "-DFORCE_CHAR8"
-  if flag(LinuxStatic)
-    GHC-Options: -static -optl-static -optl-pthread
 
 -- Test suites and benchmarks
 
 Test-suite TestPolynomial
+  Import:            common-options
   Type:              exitcode-stdio-1.0
   HS-Source-Dirs:    test
   Main-is:           TestPolynomial.hs
@@ -892,10 +772,10 @@ Test-suite TestPolynomial
     tasty-quickcheck >=0.8 && <0.11,
     tasty-th,
     toysolver
-  Default-Language: Haskell2010
   Other-Extensions: TemplateHaskell
 
 Test-suite TestSuite
+  Import:            common-options
   Type:              exitcode-stdio-1.0
   HS-Source-Dirs:    test Smtlib app/toysmt
   Main-is:           TestSuite.hs
@@ -976,7 +856,6 @@ Test-suite TestSuite
     unordered-containers,
     vector,
     vector-space
-  Default-Language: Haskell2010
   Other-Extensions:
     CPP
     DataKinds
@@ -996,6 +875,7 @@ Test-suite TestSuite
     CPP-Options: "-DTEST_SCIP"
 
 Benchmark BenchmarkSATLIB
+  Import:           common-options
   type:             exitcode-stdio-1.0
   hs-source-dirs:   benchmarks
   main-is:          BenchmarkSATLIB.hs
@@ -1005,9 +885,9 @@ Benchmark BenchmarkSATLIB
     criterion >=1.0 && <1.6,
     data-default-class,
     toysolver
-  Default-Language: Haskell2010
 
 Benchmark BenchmarkKnapsack
+  Import:           common-options
   type:             exitcode-stdio-1.0
   hs-source-dirs:   benchmarks
   main-is:          BenchmarkKnapsack.hs
@@ -1015,9 +895,9 @@ Benchmark BenchmarkKnapsack
     base,
     criterion >=1.0 && <1.6,
     toysolver
-  Default-Language: Haskell2010
 
 Benchmark BenchmarkSubsetSum
+  Import:           common-options
   type:             exitcode-stdio-1.0
   hs-source-dirs:   benchmarks
   main-is:          BenchmarkSubsetSum.hs
@@ -1026,4 +906,3 @@ Benchmark BenchmarkSubsetSum
     criterion >=1.0 && <1.6,
     toysolver,
     vector
-  Default-Language: Haskell2010
