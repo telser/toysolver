@@ -1,5 +1,5 @@
 {-# LANGUAGE BangPatterns #-}
-{-# LANGUAGE Rank2Types #-}
+{-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# OPTIONS_GHC -Wall #-}
 {-# OPTIONS_HADDOCK show-extensions #-}

@@ -1,5 +1,5 @@
 {-# OPTIONS_HADDOCK show-extensions #-}
-{-# LANGUAGE Rank2Types #-}
+{-# LANGUAGE RankNTypes #-}
 -----------------------------------------------------------------------------
 -- |
 -- Module      :  ToySolver.Data.AlgebraicNumber.Real

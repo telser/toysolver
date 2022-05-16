@@ -214,7 +214,7 @@ Library
      MultiParamTypeClasses
      OverloadedStrings
      PatternSynonyms
-     Rank2Types
+     RankNTypes
      RecursiveDo
      ScopedTypeVariables
      TemplateHaskell
